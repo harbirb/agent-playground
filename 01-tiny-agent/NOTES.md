@@ -26,3 +26,7 @@
     },
 ]
 ```
+
+#### Plain tool call
+
+- I called the api with no tools provided. It returns a content block of type text containing the answer and the stop reason of end_turn.
