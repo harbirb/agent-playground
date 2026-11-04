@@ -32,3 +32,7 @@
 - I called the api with no tools provided. It returns a content block of type text containing the answer and the stop reason of end_turn.
 - Content returns a thinking block and a text block. The answer isn't always in content[0], must find a block by its type.
 - The max_tokens arg will have to cover the tokens required for both the thinking_tokens and the output_tokens.
+
+#### call with tools provided:
+
+- called api with add_numbers tool provided. It returns a content block of type "tool_use" that gives us the inputs defined by the tool. We call the tool with the inputs and get back the output. We then send back a content block of type "tool_result" and provide the tool_use_id from the first response and the content is the tool result. We append that to the messages list and send it back to the model since its stateless. Then it responded with a content block of type "text" containing the answer and the stop reason of end_turn.
