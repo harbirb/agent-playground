@@ -1,12 +1,9 @@
 from dotenv import load_dotenv
-import os
-
-load_dotenv()
-api_key = os.getenv("ANTHROPIC_API_KEY")
-
 import anthropic
+load_dotenv()
 
-client = anthropic.Anthropic(api_key=api_key)
+
+client = anthropic.Anthropic()
 
 response = client.messages.create(
     model="claude-haiku-5-5",

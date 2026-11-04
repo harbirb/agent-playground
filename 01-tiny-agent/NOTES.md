@@ -30,3 +30,5 @@
 #### Plain tool call
 
 - I called the api with no tools provided. It returns a content block of type text containing the answer and the stop reason of end_turn.
+- Content returns a thinking block and a text block. The answer isn't always in content[0], must find a block by its type.
+- The max_tokens arg will have to cover the tokens required for both the thinking_tokens and the output_tokens.
