@@ -40,3 +40,11 @@
 #### Agentic loop:
 
 - Real calls often have several tool calls. We can use a while loop that keeps running tools and feeding results back until stop_reason is no longer "tool_use". While the api keeps responding with stop_reason == "tool_use", that means we have more tools to use. We keep appending to the messages array on each request to include prior context.
+
+If we askthe model for : (3 + 4) \* 5
+It will return the following responses:
+one response to add 3 and 4, one to multiply the result of that by 5, and then the last one will return the final answer.
+
+#### Parallel tool use:
+
+- when the model returns several tool use blocks, you owe it one tool result for each. Parallel tool use is disabled by default but can be enabled via a flag - "disable_parallel_tool_use": False
