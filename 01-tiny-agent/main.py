@@ -85,14 +85,26 @@ def main():
         tool_results = []
         for tool_use in tool_uses:
             print(f"Claude called {tool_use.name} with {json.dumps(tool_use.input)}")
-            result = run_tool(tool_use.name, tool_use.input)
-            tool_results.append(
-                {
-                    "type": "tool_result",
-                    "tool_use_id": tool_use.id,
-                    "content": json.dumps(result),
-                }
-            )
+            try:
+                result = run_tool(tool_use.name, tool_use.input)
+            except Exception as error:
+                # a bad tool call should not fail the loop
+                tool_results.append(
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": tool_use.id,
+                        "content": str(error),
+                        "is_error": True,
+                    }
+                )
+            else:
+                tool_results.append(
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": tool_use.id,
+                        "content": json.dumps(result),
+                    }
+                )
 
         messages += [
             {"role": "assistant", "content": response.content},
@@ -109,8 +121,12 @@ def main():
         pass_number += 1
 
     # Claude uses the result to answer the original question.
-    final_text = next(block for block in response.content if block.type == "text")
-    print(final_text.text)
+    if response.stop_reason == "end_turn":
+        final_text = next(block for block in response.content if block.type == "text")
+        print(final_text.text)
+    else:
+        print(f"Stopped after {pass_number} passes with stop reason: {response.stop_reason}")
+        print(response.content)
 
 if __name__ == "__main__":
     main()
