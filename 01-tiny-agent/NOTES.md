@@ -36,3 +36,7 @@
 #### call with tools provided:
 
 - called api with add_numbers tool provided. It returns a content block of type "tool_use" that gives us the inputs defined by the tool. We call the tool with the inputs and get back the output. We then send back a content block of type "tool_result" and provide the tool_use_id from the first response and the content is the tool result. We append that to the messages list and send it back to the model since its stateless. Then it responded with a content block of type "text" containing the answer and the stop reason of end_turn.
+
+#### Agentic loop:
+
+- Real calls often have several tool calls. We can use a while loop that keeps running tools and feeding results back until stop_reason is no longer "tool_use". While the api keeps responding with stop_reason == "tool_use", that means we have more tools to use. We keep appending to the messages array on each request to include prior context.
