@@ -76,7 +76,7 @@ def main():
     )
 
     pass_number = 1
-    while response.stop_reason == "tool_use" or pass_number > MAX_PASSES:
+    while response.stop_reason == "tool_use":
         if pass_number > MAX_PASSES:
             print(f"Stopped after reaching the maximum of {MAX_PASSES} tool-use passes.")
             return

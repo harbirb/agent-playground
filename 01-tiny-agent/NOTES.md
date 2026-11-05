@@ -47,4 +47,4 @@ one response to add 3 and 4, one to multiply the result of that by 5, and then t
 
 #### Parallel tool use:
 
-- when the model returns several tool use blocks, you owe it one tool result for each. Parallel tool use is disabled by default but can be enabled via a flag - "disable_parallel_tool_use": False
+- when the model returns several tool use blocks, you owe it one tool result for each. Parallel tool use is enabled by default. Set "disable_parallel_tool_use": True in tool_choice to turn it off.
