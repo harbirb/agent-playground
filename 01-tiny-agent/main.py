@@ -5,6 +5,7 @@ load_dotenv()
 
 
 client = anthropic.Anthropic()
+MAX_PASSES = 10
 
 def add(a, b):
     return a + b
@@ -74,7 +75,12 @@ def main():
         messages=messages,
     )
 
-    while response.stop_reason == "tool_use":
+    pass_number = 1
+    while response.stop_reason == "tool_use" or pass_number > MAX_PASSES:
+        if pass_number > MAX_PASSES:
+            print(f"Stopped after reaching the maximum of {MAX_PASSES} tool-use passes.")
+            return
+
         tool_uses = [block for block in response.content if block.type == "tool_use"]
         tool_results = []
         for tool_use in tool_uses:
@@ -100,6 +106,7 @@ def main():
             tool_choice={"type": "auto", "disable_parallel_tool_use": False},
             messages=messages,
         )
+        pass_number += 1
 
     # Claude uses the result to answer the original question.
     final_text = next(block for block in response.content if block.type == "text")
