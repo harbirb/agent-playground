@@ -59,6 +59,8 @@ Cost of one run: (3,459 × $0.10 + 572 × $0.50) / 1,000,000 ≈ $0.00063. Outpu
 
 Input and output are priced differently. for Haiku 5.5, input is 10 cents per million tokens, and output tokens are 5x that. Why do input tokens grow for each iteration? Because its stateless and we must send all previous messages as part of the context.
 
+Thinking tokens are classified and billed as output tokens. If you notice the output is small but the output token count is big, thats why!
+
 #### 2. statelessness
 
 Call 1: "my name is Harbir." Call 2 (without call 1 in `messages`): "what's my name?". The second call said "i dont know your name". This is stateless because it doesn't include the first call in the context. It's like a new conversation. When you're making calls, the context is the previous calls and must be included in each call. If you don't include the previous calls in each call, it's like a new conversation. in the 3rd call, I included the previous message where i stated my name and it worked because the model had all the information.
@@ -69,7 +71,7 @@ Temperature is a parameter that controls the randomness and creativity of the mo
 
 So it looks like anthropic doesn't support temperature anymore. I had to pass it in explicitly, and use an older model.
 
-I asked "the cat sat on the..." and got this:
+I asked "One sentence - the cat sat on the..." and got this:
 
 --- temperature 1.0 ---
 One sentence - the cat sat on the windowsill, watching the birds flutter past with intense, unblinking eyes.
@@ -86,3 +88,29 @@ The new models don't support temperatrue at all. Why?
 - The newer models use RLVR (reinforcement learning with verifiable rewards) - so they naturally find the best answer.
 - Setting the temperature to 0 doesn't actually make the output 100% deterministic despite what developers thought.
 - it ruins the models thinking loops: the newer models use adaptive thinking to double-check their logic. Temperature adds randomness which scrambles the internal reasoning chain which causes logical errors.
+
+#### 4. system prompt
+
+We can provide a system prompt using the 'system' arg in client.messages.create(). The docs say: "Setting a role in the system prompt focuses Claude’s behavior and tone for your use case". I compared the math example with the prompt "Answer with only the number" and got this: The counts are the input/output tokens per message.
+
+--- no system prompt ---
+491 265
+822 141
+1029 72
+1108 96
+The result is **174,485**.
+
+Here are the steps:
+
+1. 1234 + 5678 = 6912
+2. 6912 × 23 = 158,976
+3. 123 × 125 = 15,375, then + 134 = 15,509
+4. 158,976 + 15,509 = 174,485
+
+--- system: Answer with only the number. ---
+500 179
+174485
+
+The one with the system prompt followed the instructions and returned just the number. However, it looks like it skipped the tool use and simply just returned the number. I think it skipped the tool use since the system prompt said to "Answer with only the number". It made 1 api call and it returned 179 output tokens - seems like it includes the thinking tokens used by the model when it did the calculation without tool calls.
+
+It suggests the system prompt can have effects on the behvaiour like changing whether the tools even get called...
