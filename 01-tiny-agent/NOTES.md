@@ -48,3 +48,13 @@ one response to add 3 and 4, one to multiply the result of that by 5, and then t
 #### Parallel tool use:
 
 - when the model returns several tool use blocks, you owe it one tool result for each. Parallel tool use is enabled by default. Set "disable_parallel_tool_use": True in tool_choice to turn it off.
+
+## Experiments
+
+#### 1. tokens/cost
+
+Print the response.usage in each loop iteration to see input and output tokens with each API call. For "What is (1234 + 5678) * 23 + (123*125+134)", input/output tokens per message went like so : 491 268 -> 825 141 -> 1032 72 -> 1111 91. Total split is 3459 : 572.
+
+Cost of one run: (3,459 × $0.10 + 572 × $0.50) / 1,000,000 ≈ $0.00063. Output tokens are fewer but 5× the price, so they’re about 45% of the cost.
+
+Input and output are priced differently. for Haiku 5.5, input is 10 cents per million tokens, and output tokens are 5x that. Why do input tokens grow for each iteration? Because its stateless and we must send all previous messages as part of the context.
