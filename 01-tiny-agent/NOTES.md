@@ -58,3 +58,7 @@ Print the response.usage in each loop iteration to see input and output tokens w
 Cost of one run: (3,459 × $0.10 + 572 × $0.50) / 1,000,000 ≈ $0.00063. Output tokens are fewer but 5× the price, so they’re about 45% of the cost.
 
 Input and output are priced differently. for Haiku 5.5, input is 10 cents per million tokens, and output tokens are 5x that. Why do input tokens grow for each iteration? Because its stateless and we must send all previous messages as part of the context.
+
+#### 2. statelessness
+
+Call 1: "my name is Harbir." Call 2 (without call 1 in `messages`): "what's my name?". The second call said "i dont know your name". This is stateless because it doesn't include the first call in the context. It's like a new conversation. When you're making calls, the context is the previous calls and must be included in each call. If you don't include the previous calls in each call, it's like a new conversation. in the 3rd call, I included the previous message where i stated my name and it worked because the model had all the information.
