@@ -62,3 +62,27 @@ Input and output are priced differently. for Haiku 5.5, input is 10 cents per mi
 #### 2. statelessness
 
 Call 1: "my name is Harbir." Call 2 (without call 1 in `messages`): "what's my name?". The second call said "i dont know your name". This is stateless because it doesn't include the first call in the context. It's like a new conversation. When you're making calls, the context is the previous calls and must be included in each call. If you don't include the previous calls in each call, it's like a new conversation. in the 3rd call, I included the previous message where i stated my name and it worked because the model had all the information.
+
+#### 3. sampling
+
+Temperature is a parameter that controls the randomness and creativity of the model's output. At high temperature, the model is more likely to generate creative and interesting responses. At low temperature, the output is more consistent and predictable (but not necessarily more correct). It basically sounds like its a creativity dial.
+
+So it looks like anthropic doesn't support temperature anymore. I had to pass it in explicitly, and use an older model.
+
+I asked "the cat sat on the..." and got this:
+
+--- temperature 1.0 ---
+One sentence - the cat sat on the windowsill, watching the birds flutter past with intense, unblinking eyes.
+One sentence - the cat sat on the soft, warm windowsill, watching the birds flutter past with quiet fascination.
+One sentence - the cat sat on the warm windowsill, watching the birds flutter past the glass. + 2 more
+
+--- temperature 0.0 ---
+One sentence - the cat sat on the warm windowsill, watching the birds flutter past the glass. x 5 times
+
+Higher temperature leads to more diverse responses with a lot more creativity in output. The lower temp ones were all the same.
+
+The new models don't support temperatrue at all. Why?
+
+- The newer models use RLVR (reinforcement learning with verifiable rewards) - so they naturally find the best answer.
+- Setting the temperature to 0 doesn't actually make the output 100% deterministic despite what developers thought.
+- it ruins the models thinking loops: the newer models use adaptive thinking to double-check their logic. Temperature adds randomness which scrambles the internal reasoning chain which causes logical errors.
