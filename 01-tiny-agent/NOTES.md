@@ -114,3 +114,11 @@ Here are the steps:
 The one with the system prompt followed the instructions and returned just the number. However, it looks like it skipped the tool use and simply just returned the number. I think it skipped the tool use since the system prompt said to "Answer with only the number". It made 1 api call and it returned 179 output tokens - seems like it includes the thinking tokens used by the model when it did the calculation without tool calls.
 
 It suggests the system prompt can have effects on the behvaiour like changing whether the tools even get called...
+
+#### 5. Structured Outputs
+
+Claude also lists structured outputs as part of the model capabilities. You just define your JSON schema, and send it in output_format, then parse the response. I used response = client.messages.parse(..., output_format=Person)
+
+We can pass in a sentence containing information we want parsed and returned in a specific schema. Without structured output, the model returns things that fail to parse because it returns markdown-fenced JSON. With structured outputs, the data is returned in the exact format we want.
+
+prompt only: 10/10 parse failures; structured outputs: 0/10”
